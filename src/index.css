@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --ir-navy: #1e3a8a;
+  --ir-blue: #0284c7;
+  --ir-gold: #d97706;
+  --ir-green: #059669;
+  --ir-red: #dc2626;
+  --ir-purple: #7c3aed;
+  --ir-bg: #f8fafc;
+  --ir-card-bg: #ffffff;
+  --ir-text-main: #0f172a;
+  --ir-text-sub: #64748b;
+  --ir-border: #e2e8f0;
+}
+
+[data-theme='dark'] {
+  --ir-bg: #0b0f19;
+  --ir-card-bg: #131b2e;
+  --ir-text-main: #f1f5f9;
+  --ir-text-sub: #94a3b8;
+  --ir-border: #1e293b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--ir-bg);
+  color: var(--ir-text-main);
+  transition: background-color 0.25s ease, color 0.25s ease;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-font {
+  font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
+}
+
+/* Indian Railways Station LED Board Typography */
+.led-board-font {
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 1px;
+}
+
+.led-amber-text {
+  color: #ffb700;
+  text-shadow: 0 0 8px rgba(255, 183, 0, 0.6), 0 0 16px rgba(255, 140, 0, 0.4);
+}
+
+.led-green-text {
+  color: #00ff66;
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.6);
+}
+
+.led-red-text {
+  color: #ff3333;
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.6);
+}
+
+.led-container-bg {
+  background: #0a0a0a;
+  border: 4px solid #1a1a1a;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 4px 20px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.led-container-bg::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 2;
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+}
+
+/* Custom Gantt Grid Utility */
+.gantt-hour-cell {
+  border-right: 1px dashed var(--ir-border);
+  min-width: 48px;
+  text-align: center;
+}
+
+.gantt-block-bar {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.gantt-block-bar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+  filter: brightness(1.08);
+}
+
+.joint-merged-badge {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: white;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* Animations */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.pulse-active {
+  animation: pulse-subtle 2s infinite ease-in-out;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.marquee-scroll {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 18s linear infinite;
+}
+
+/* Digital Twin WebGL stub grid styling */
+.digital-twin-grid {
+  background-size: 30px 30px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
