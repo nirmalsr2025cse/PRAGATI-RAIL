@@ -31,7 +31,7 @@ export const SettingsPage = ({ userRole, setUserRole }) => {
     setApiTestResult(null);
     setTimeout(() => {
       setApiTesting(false);
-      setApiTestResult({ status: 'success', latency: '42 ms', version: 'v1.8.4-sih26027' });
+      setApiTestResult({ status: 'success', latency: '42 ms', version: 'v1.8.4' });
       message.success('API Ping Successful! Backend endpoints responding at 42ms latency.');
     }, 1200);
   };

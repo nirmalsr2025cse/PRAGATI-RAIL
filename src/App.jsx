@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import { lightTheme, darkTheme } from './theme/themeConfig';
 import { RegionProvider } from './context/RegionContext';
+import { AuthProvider } from './context/AuthContext';
 import { AppShell } from './components/common/AppShell';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
 
+import { LoginPage } from './pages/LoginPage';
+import { AccessRestrictedPage } from './pages/AccessRestrictedPage';
 import { NetworkCommandCenterPage } from './pages/NetworkCommandCenterPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { AIResponsesPage } from './pages/AIResponsesPage';
@@ -21,9 +25,8 @@ import { SettingsPage } from './pages/SettingsPage';
 
 export function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [userRole, setUserRole] = useState('Admin'); // 'Admin' | 'Manager' | 'Viewer'
+  const [userRole, setUserRole] = useState('Admin');
 
-  // Apply dark attribute to body for custom CSS variables
   useEffect(() => {
     if (isDarkMode) {
       document.body.setAttribute('data-theme', 'dark');
@@ -34,33 +37,48 @@ export function App() {
 
   return (
     <ConfigProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <RegionProvider>
-        <Router>
-          <AppShell
-            isDarkMode={isDarkMode}
-            setIsDarkMode={setIsDarkMode}
-            userRole={userRole}
-            setUserRole={setUserRole}
-          >
+      <AuthProvider>
+        <RegionProvider>
+          <Router>
             <Routes>
-              <Route path="/" element={<NetworkCommandCenterPage userRole={userRole} />} />
-              <Route path="/command-center" element={<NetworkCommandCenterPage userRole={userRole} />} />
-              <Route path="/overview" element={<DashboardPage userRole={userRole} />} />
-              <Route path="/ai-responses" element={<AIResponsesPage userRole={userRole} />} />
-              <Route path="/digital-twin" element={<DigitalTwinPage userRole={userRole} />} />
-              <Route path="/station-board" element={<StationDisplayBoardPage userRole={userRole} />} />
-              <Route path="/tms" element={<TMSManagerPage userRole={userRole} />} />
-              <Route path="/smms" element={<SMMSManagerPage userRole={userRole} />} />
-              <Route path="/tdms" element={<TDMSManagerPage userRole={userRole} />} />
-              <Route path="/bdms-planner" element={<BDMSBlockPlannerPage userRole={userRole} />} />
-              <Route path="/coa-database" element={<COADatabasePage userRole={userRole} />} />
-              <Route path="/alerts" element={<AlertsPage userRole={userRole} />} />
-              <Route path="/reports" element={<ReportsPage userRole={userRole} />} />
-              <Route path="/settings" element={<SettingsPage userRole={userRole} setUserRole={setUserRole} />} />
+              {/* Unauthenticated Login Route */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/403" element={<AccessRestrictedPage />} />
+
+              {/* Protected App Routes wrapped inside AppShell */}
+              <Route
+                path="/*"
+                element={
+                  <AppShell
+                    isDarkMode={isDarkMode}
+                    setIsDarkMode={setIsDarkMode}
+                    userRole={userRole}
+                    setUserRole={setUserRole}
+                  >
+                    <Routes>
+                      <Route path="/" element={<ProtectedRoute><NetworkCommandCenterPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/command-center" element={<ProtectedRoute><NetworkCommandCenterPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/overview" element={<ProtectedRoute><DashboardPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/ai-responses" element={<ProtectedRoute><AIResponsesPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/digital-twin" element={<ProtectedRoute><DigitalTwinPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/station-board" element={<ProtectedRoute><StationDisplayBoardPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/tms" element={<ProtectedRoute><TMSManagerPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/smms" element={<ProtectedRoute><SMMSManagerPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/tdms" element={<ProtectedRoute><TDMSManagerPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/bdms-planner" element={<ProtectedRoute><BDMSBlockPlannerPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/coa-database" element={<ProtectedRoute><COADatabasePage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/alerts" element={<ProtectedRoute><AlertsPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/reports" element={<ProtectedRoute><ReportsPage userRole={userRole} /></ProtectedRoute>} />
+                      <Route path="/settings" element={<ProtectedRoute><SettingsPage userRole={userRole} setUserRole={setUserRole} /></ProtectedRoute>} />
+                      <Route path="*" element={<Navigate to="/command-center" replace />} />
+                    </Routes>
+                  </AppShell>
+                }
+              />
             </Routes>
-          </AppShell>
-        </Router>
-      </RegionProvider>
+          </Router>
+        </RegionProvider>
+      </AuthProvider>
     </ConfigProvider>
   );
 }

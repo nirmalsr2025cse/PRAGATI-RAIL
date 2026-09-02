@@ -120,7 +120,7 @@ export const NetworkCommandCenterPage = () => {
               RAILWISE
             </div>
             <span style={{ fontSize: 11, color: 'var(--ir-text-sub)', fontWeight: 600, letterSpacing: 0.5 }}>
-              AI-POWERED RAILWAY OPERATIONS • SIH26027
+              AI-POWERED RAILWAY OPERATIONS
             </span>
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 800, margin: '4px 0 0 0', color: 'var(--ir-text-main)', letterSpacing: '0.5px' }}>

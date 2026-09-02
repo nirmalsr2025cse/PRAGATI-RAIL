@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Card, Row, Col, Select, Checkbox, Tag, Button, Alert, Badge, Spin, Drawer, Descriptions, Divider } from 'antd';
+import { Card, Row, Col, Select, Checkbox, Tag, Button, Alert, Spin, Drawer, Descriptions, Divider, Space } from 'antd';
 import {
   DesktopOutlined,
   PlayCircleOutlined,
@@ -9,30 +9,41 @@ import {
   InfoCircleOutlined,
   ThunderboltOutlined,
   ToolOutlined,
-  BlockOutlined
+  BlockOutlined,
+  PlusOutlined,
+  SendOutlined
 } from '@ant-design/icons';
 import { DIVISIONS } from '../mock/apiData';
+import { useAuth } from '../context/AuthContext';
+import { AddDefectModal } from '../components/common/AddDefectModal';
+import { SendBlockRequestModal } from '../components/common/SendBlockRequestModal';
 
 export const DigitalTwinPage = () => {
   const containerRef = useRef(null);
+  const { currentUser } = useAuth();
   const [unityConnected, setUnityConnected] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedDivision, setSelectedDivision] = useState('DLI');
   const [activeLayers, setActiveLayers] = useState(['track', 'signal', 'ohe', 'trains']);
+  
+  // Contextual Action Modal States
+  const [addDefectOpen, setAddDefectOpen] = useState(false);
+  const [sendBlockOpen, setSendBlockOpen] = useState(false);
+
   const [selectedNode, setSelectedNode] = useState({
-    id: 'NODE-NDLS-KM-142',
+    id: 'TRK-NDLS-142',
     name: 'NDLS-CNB Down Track Segment KM 142/10-16',
-    department: 'Engineering + Signal + OHE Joint Zone',
-    status: 'Maintenance Block Active',
+    department: currentUser?.department || 'TMS',
+    status: 'Maintenance Due',
     activeBlock: 'JB-NDLS-CNB-01',
-    currentDefects: 3,
+    currentDefects: 2,
     lastScanDate: '2026-09-02 18:00',
     geoCoordinates: '28.6139° N, 77.2090° E',
     activeSpeedRestriction: '30 km/h'
   });
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // Message passing stub for future Unity WebGL integration
+  // Message passing stub for Unity WebGL integration
   useEffect(() => {
     window.UnityBridge = {
       onNodeSelected: (nodeData) => {
@@ -42,7 +53,6 @@ export const DigitalTwinPage = () => {
       },
       sendMessageToUnity: (gameObjectName, methodName, param) => {
         console.log(`[Unity Bridge] Sent message to Unity -> Object: ${gameObjectName}, Method: ${methodName}, Param:`, param);
-        // TODO: API - Replace with actual unityInstance.SendMessage(gameObjectName, methodName, param) when WebGL build is mounted
       }
     };
 
@@ -56,7 +66,7 @@ export const DigitalTwinPage = () => {
     setTimeout(() => {
       setLoading(false);
       setUnityConnected(true);
-    }, 1500);
+    }, 1200);
   };
 
   const handleLayerToggle = (layer) => {
@@ -76,10 +86,10 @@ export const DigitalTwinPage = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 24, fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <DesktopOutlined style={{ color: '#0284c7' }} /> Digital Twin 3D Viewport (Unity WebGL Mount Point)
+            <DesktopOutlined style={{ color: '#0284c7' }} /> Digital Twin 3D Infrastructure Viewport
           </h1>
           <p style={{ color: 'var(--ir-text-sub)', margin: 0, fontSize: 13 }}>
-            High-precision 3D spatial visualization of corridor assets, ongoing joint blocks, and train movements
+            High-precision 3D spatial visualization of corridor assets, ongoing joint blocks, and train movements ({currentUser?.department || 'ALL'} View)
           </p>
         </div>
 
@@ -103,7 +113,6 @@ export const DigitalTwinPage = () => {
             bodyStyle={{ padding: 0, position: 'relative' }}
             style={{ borderRadius: 10, border: '1px solid var(--ir-border)', overflow: 'hidden' }}
           >
-            {/* The mount point div referenced for Unity WebGL canvas */}
             <div
               ref={containerRef}
               id="unity-canvas-container"
@@ -158,7 +167,7 @@ export const DigitalTwinPage = () => {
                     style={{ marginTop: 12 }}
                     onClick={() => setDrawerVisible(true)}
                   >
-                    Inspect Selected Asset Node
+                    Inspect Selected Asset Node ({selectedNode.id})
                   </Button>
                 </div>
               ) : (
@@ -278,26 +287,62 @@ export const DigitalTwinPage = () => {
         </Col>
       </Row>
 
-      {/* Selected Node Telemetry Drawer */}
+      {/* Selected Node Telemetry Drawer with Contextual Action Workflows */}
       <Drawer
-        title={`Asset Inspector: ${selectedNode.id}`}
+        title={`Asset Telemetry Inspector: ${selectedNode.id}`}
         placement="right"
-        width={400}
+        width={440}
         onClose={() => setDrawerVisible(false)}
         open={drawerVisible}
       >
-        <Descriptions column={1} bordered size="small">
+        <Descriptions column={1} bordered size="small" style={{ marginBottom: 20 }}>
           <Descriptions.Item label="Asset Name">{selectedNode.name}</Descriptions.Item>
           <Descriptions.Item label="Department">{selectedNode.department}</Descriptions.Item>
-          <Descriptions.Item label="Block Status">
-            <Tag color="success">{selectedNode.status}</Tag>
+          <Descriptions.Item label="Status">
+            <Tag color="warning">{selectedNode.status}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="Active Joint Block">{selectedNode.activeBlock}</Descriptions.Item>
           <Descriptions.Item label="Coordinates">{selectedNode.geoCoordinates}</Descriptions.Item>
           <Descriptions.Item label="Speed Restriction">{selectedNode.activeSpeedRestriction}</Descriptions.Item>
           <Descriptions.Item label="Last LiDAR Scan">{selectedNode.lastScanDate}</Descriptions.Item>
         </Descriptions>
+
+        {/* CONTEXTUAL ACTION WORKFLOW BUTTONS */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <Button
+            type="primary"
+            block
+            icon={<PlusOutlined />}
+            style={{ background: '#0284c7', borderColor: '#0284c7' }}
+            onClick={() => setAddDefectOpen(true)}
+          >
+            LOG NEW DEFECT FOR THIS ASSET
+          </Button>
+
+          <Button
+            type="primary"
+            block
+            icon={<SendOutlined />}
+            style={{ background: '#059669', borderColor: '#059669' }}
+            onClick={() => setSendBlockOpen(true)}
+          >
+            SEND BLOCK REQUEST FOR THIS ASSET
+          </Button>
+        </div>
       </Drawer>
+
+      {/* Contextual Action Modals */}
+      <AddDefectModal
+        open={addDefectOpen}
+        onClose={() => setAddDefectOpen(false)}
+        defaultAsset={selectedNode}
+      />
+
+      <SendBlockRequestModal
+        open={sendBlockOpen}
+        onClose={() => setSendBlockOpen(false)}
+        targetItem={selectedNode}
+      />
     </div>
   );
 };
