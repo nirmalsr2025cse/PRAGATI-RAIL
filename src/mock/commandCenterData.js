@@ -1,4 +1,4 @@
-// Synthetic Railway Data Model for RAILWISE Network Command Center
+// Synthetic Railway Data Model for PRAGATI Network Command Center
 // Label: "Simulation Mode — Synthetic Railway Data"
 
 export const COMMAND_CENTER_ZONES = {

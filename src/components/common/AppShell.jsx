@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Button, Select, Badge, Avatar, Tag, Tooltip, Switch, Space } from 'antd';
 import {
-  DashboardOutlined,
   RobotOutlined,
   BlockOutlined,
   DesktopOutlined,
   ToolOutlined,
   AlertOutlined,
   FileTextOutlined,
-  SettingOutlined,
   ThunderboltOutlined,
-  LineChartOutlined,
+  DatabaseOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   SunOutlined,
@@ -19,22 +17,23 @@ import {
   BellOutlined,
   GlobalOutlined,
   SafetyCertificateOutlined,
-  AimOutlined,
   LogoutOutlined,
-  SwapOutlined
+  CalendarOutlined,
+  SettingOutlined,
+  CompassOutlined,
+  DashboardOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRegion } from '../../context/RegionContext';
-import { useAuth, DEMO_ACCOUNTS } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 const { Header, Sider, Content } = Layout;
 
-export const AppShell = ({ children, isDarkMode, setIsDarkMode, userRole, setUserRole }) => {
+export const AppShell = ({ children, isDarkMode, setIsDarkMode }) => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, logout, hasPermission } = useAuth();
-
   const {
     selectedZone,
     setSelectedZone,
@@ -44,44 +43,30 @@ export const AppShell = ({ children, isDarkMode, setIsDarkMode, userRole, setUse
     availableDivisions
   } = useRegion();
 
-  const allMenuItems = [
-    { 
-      key: '/command-center', 
-      icon: <AimOutlined style={{ color: '#38bdf8', fontSize: 18 }} />, 
-      label: (
-        <span style={{ fontWeight: 800, color: '#38bdf8' }}>
-          1. Command Center ★
-        </span>
-      ) 
-    },
-    { key: '/overview', icon: <DashboardOutlined />, label: '2. Overview Dashboard' },
-    { key: '/ai-responses', icon: <RobotOutlined />, label: '3. AI Optimization Results' },
-    { key: '/digital-twin', icon: <DesktopOutlined />, label: '4. Digital Twin 3D' },
-    { key: '/station-board', icon: <LineChartOutlined />, label: '5. Station Display Board' },
-    { key: '/tms', icon: <ToolOutlined style={{ color: '#0284c7' }} />, label: '6. TMS Track Maintenance' },
-    { key: '/smms', icon: <ThunderboltOutlined style={{ color: '#d97706' }} />, label: '7. SMMS Signal & Telecom' },
-    { key: '/tdms', icon: <BlockOutlined style={{ color: '#7c3aed' }} />, label: '8. TDMS Traction (OHE)' },
-    { 
-      key: '/bdms-planner', 
-      icon: <BlockOutlined style={{ color: '#059669', fontSize: 18 }} />, 
-      label: (
-        <span style={{ fontWeight: 700, color: '#059669' }}>
-          9. BDMS Block Planner ★
-        </span>
-      ) 
-    },
-    { key: '/coa-database', icon: <LineChartOutlined />, label: '10. COA Corridor DB' },
-    { 
-      key: '/alerts', 
-      icon: <Badge count={1} dot><AlertOutlined /></Badge>, 
-      label: '11. Alert System' 
-    },
-    { key: '/reports', icon: <FileTextOutlined />, label: '12. Reports & Analytics' },
-    { key: '/settings', icon: <SettingOutlined />, label: '13. Settings & Users' },
+  // Master base menu list (Un-numbered; items will be filtered and indexed dynamically from 1 to N)
+  const masterMenuItems = [
+    { key: '/command-center', icon: <CompassOutlined />, rawLabel: 'Network Command Center' },
+    { key: '/overview', icon: <DashboardOutlined />, rawLabel: 'Executive Overview Dashboard' },
+    { key: '/ai-responses', icon: <RobotOutlined />, rawLabel: 'AI Optimization Results' },
+    { key: '/digital-twin', icon: <DesktopOutlined />, rawLabel: 'Digital Twin' },
+    { key: '/tms', icon: <ToolOutlined />, rawLabel: 'TMS Track Maintenance' },
+    { key: '/smms', icon: <ThunderboltOutlined />, rawLabel: 'SMMS Signal & Telecom' },
+    { key: '/tdms', icon: <BlockOutlined />, rawLabel: 'TDMS Traction (OHE)' },
+    { key: '/bdms-planner', icon: <CalendarOutlined />, rawLabel: 'BDMS Block Planner' },
+    { key: '/coa-database', icon: <DatabaseOutlined />, rawLabel: 'COA Corridor DB' },
+    { key: '/alerts', icon: <Badge count={1} dot><AlertOutlined /></Badge>, rawLabel: 'Alert System' },
+    { key: '/reports', icon: <FileTextOutlined />, rawLabel: 'Reports & Analytics' },
+    { key: '/settings', icon: <SettingOutlined />, rawLabel: 'Settings & Users' },
   ];
 
-  // Filter menu items by user role permissions (RBAC Enforcement!)
-  const allowedMenuItems = allMenuItems.filter(item => hasPermission(item.key));
+  // Filter allowed menu items by user role permissions and dynamically generate 1-to-N sequential numbering
+  const allowedMenuItems = masterMenuItems
+    .filter(item => hasPermission(item.key))
+    .map((item, index) => ({
+      key: item.key,
+      icon: item.icon,
+      label: `${index + 1}. ${item.rawLabel}`
+    }));
 
   const deptColors = {
     TMS: '#0284c7',
@@ -152,12 +137,15 @@ export const AppShell = ({ children, isDarkMode, setIsDarkMode, userRole, setUse
               )}
             </div>
 
-            {/* Chained Region Controls: Zone & Division Selectors */}
+            {/* Operational Scope Filters: Zone & Division Selectors (Un-numbered) */}
             {!collapsed && (
               <div style={{ padding: '12px 16px 10px 16px', borderBottom: '1px solid var(--ir-border)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ fontSize: 10, color: 'var(--ir-text-sub)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 2 }}>
+                  OPERATIONAL SCOPE
+                </div>
                 <div>
-                  <div style={{ fontSize: 10, color: 'var(--ir-text-sub)', marginBottom: 4, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    1. Select Zone
+                  <div style={{ fontSize: 11, color: 'var(--ir-text-main)', marginBottom: 4, fontWeight: 600 }}>
+                    Zone
                   </div>
                   <Select
                     value={selectedZone}
@@ -168,8 +156,8 @@ export const AppShell = ({ children, isDarkMode, setIsDarkMode, userRole, setUse
                 </div>
 
                 <div>
-                  <div style={{ fontSize: 10, color: 'var(--ir-text-sub)', marginBottom: 4, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    2. Select Division
+                  <div style={{ fontSize: 11, color: 'var(--ir-text-main)', marginBottom: 4, fontWeight: 600 }}>
+                    Division
                   </div>
                   <Select
                     value={selectedDivision}
@@ -182,14 +170,19 @@ export const AppShell = ({ children, isDarkMode, setIsDarkMode, userRole, setUse
             )}
           </div>
 
-          {/* Scrollable Navigation Menu Section (Filtered by User Department Permissions) */}
-          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+          {/* Scrollable Navigation Menu Section */}
+          <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', paddingTop: 8 }}>
+            {!collapsed && (
+              <div style={{ padding: '0 16px 6px 16px', fontSize: 10, color: 'var(--ir-text-sub)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+                MODULES
+              </div>
+            )}
             <Menu
               mode="inline"
               selectedKeys={[location.pathname]}
               items={allowedMenuItems}
               onClick={({ key }) => navigate(key)}
-              style={{ borderRight: 0, paddingTop: 4, paddingBottom: 16 }}
+              style={{ borderRight: 0, paddingBottom: 16 }}
             />
           </div>
         </div>
@@ -217,7 +210,7 @@ export const AppShell = ({ children, isDarkMode, setIsDarkMode, userRole, setUse
             />
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {getScopeBadge()}
-              <Tag color="green">RAILWISE AI Engine: Online</Tag>
+              <Tag color="green">PRAGATI AI Engine: Online</Tag>
             </div>
           </div>
 

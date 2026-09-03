@@ -1,5 +1,6 @@
 // Mock API Dataset for PRAGATI-RAIL (SIH26027)
 // Full Indian Railways Taxonomy — 18 Zones & Divisions
+// Fully Aligned with 50-Field TDMS & 40-Field SMMS Schemas
 
 export const ZONES = [
   { code: 'ALL', name: 'All India (18 Zones)', headquarters: 'Railway Board, New Delhi' },
@@ -185,15 +186,15 @@ export const TMS_DEFECTS = [
     zone: 'NR',
     division: 'DLI',
     status: 'Pending Block',
-    Due_Date: '2026-08-31',
+    Work_Due_Date: '2026-08-31',
     Overdue_Days: 2,
     Joint_Block_Feasibility_Score: 94.5,
     Task_Urgency_Tier: 'Tier 1 (Immediate)',
     Planning_Horizon: 'Next 24 Hours',
-    Recommended_Block_Date: '2026-09-03',
-    Recommended_Block_Duration_Hours: 4.0,
+    Recommended_Block_Duration_Min: 240,
     Joint_Block_Recommendation: 'Merge with SMMS Point Machine Overhaul & TDMS Insulator Replace',
     Priority_Score: 95,
+    Priority_Class: 'CRITICAL',
     Predicted_Resolution_Time_Hours: 3.5,
     Risk_If_Delayed: 'High Risk of Derailment / Track Fracture on High-Speed Corridor',
     Confidence_Score: '98.2%'
@@ -219,67 +220,286 @@ export const TMS_DEFECTS = [
     zone: 'NR',
     division: 'DLI',
     status: 'Merged Joint Block',
-    Due_Date: '2026-09-03',
+    Work_Due_Date: '2026-09-03',
     Overdue_Days: 0,
     Joint_Block_Feasibility_Score: 89.0,
     Task_Urgency_Tier: 'Tier 2 (72 Hours)',
     Planning_Horizon: 'Weekly Window',
-    Recommended_Block_Date: '2026-09-04',
-    Recommended_Block_Duration_Hours: 4.0,
+    Recommended_Block_Duration_Min: 240,
     Joint_Block_Recommendation: 'Merge with TDMS Catenary Dropper Repair',
     Priority_Score: 78,
+    Priority_Class: 'HIGH',
     Predicted_Resolution_Time_Hours: 4.0,
     Risk_If_Delayed: 'Track Geometry Degradation & Speed Restriction imposing to 50 km/h',
     Confidence_Score: '94.6%'
-  },
-  {
-    Defect_ID: 'TRK-2026-102',
-    id: 'TRK-2026-102',
-    department: 'TMS',
-    deptLabel: 'Engineering (Track)',
-    Section_ID: 'SEC-MAS-JTJ-DN',
-    Station1: 'Chennai Central (MAS)',
-    Station2: 'Jolarpettai (JTJ)',
-    Chainage_KM: '72.300',
-    Latitude: '13.0827° N',
-    Longitude: '80.2707° E',
-    Asset_Type: 'Point & Crossing',
-    Defect_Type: 'Switch Expansion Joint (SEJ) Wear',
-    Severity_Level: 'High',
-    Detection_Method: 'Manual Patrol',
-    Reported_Date: '2026-09-01',
-    location: 'MAS-JTJ Down Line (KM 72.300)',
-    section: 'MAS - JTJ',
-    zone: 'SR',
-    division: 'MAS',
-    status: 'Pending Block',
-    Due_Date: '2026-09-04',
-    Overdue_Days: 0,
-    Joint_Block_Feasibility_Score: 92.0,
-    Task_Urgency_Tier: 'Tier 2 (72 Hours)',
-    Planning_Horizon: 'Weekly Window',
-    Recommended_Block_Date: '2026-09-04',
-    Recommended_Block_Duration_Hours: 4.0,
-    Joint_Block_Recommendation: 'Merge with SMMS Axle Counter Calibration & TDMS Wire Repair',
-    Priority_Score: 84,
-    Predicted_Resolution_Time_Hours: 3.8,
-    Risk_If_Delayed: 'Possibility of Point Indicator Failure & Joint Jamming under Heat Expansion',
-    Confidence_Score: '96.0%'
   }
 ];
 
+// Schema-Compliant 40-Field SMMS Signalling & Telecom Dataset (No TDMS Electrical Fields)
 export const SMMS_DEFECTS = [
-  { id: 'SIG-2026-042', department: 'SMMS', deptLabel: 'Signal & Telecom', defectType: 'Point Machine 102B Overhaul Fault', location: 'NDLS-CNB Down Line (KM 142/10 Junction)', section: 'NDLS - CNB', zone: 'NR', division: 'DLI', severity: 'High', severityScore: 82, urgencyScore: 85, assetImpactScore: 75, trainImpactScore: 70, overdueDaysScore: 60, overdueDays: 3, status: 'Merged Joint Block', requestedWindow: '02:30 - 05:30', requestedDurationHrs: 3.0, equipmentRequired: 'Point Calibration Kit', contractorTeam: 'S&T Maintenance Gang #5', dateReported: '2026-08-30' }
+  {
+    // G. IDENTIFIERS & METADATA
+    Defect_ID: 'SIG-2026-042',
+    id: 'SIG-2026-042',
+    department: 'SMMS',
+    deptLabel: 'Signal & Telecom (S&T)',
+    Detection_Method: 'Remote Diagnostic System (SSI Log)',
+    Reported_Date: '2026-08-30',
+
+    // B. ASSET & LOCATION INFO
+    Section_ID: 'SEC-NDLS-CNB-DN',
+    Station1: 'Lucknow JN (LKO)',
+    Station2: 'Kanpur Central (CNB)',
+    Chainage_KM: '142.100',
+    Zone: 'NR',
+    Division: 'DLI',
+    Asset_ID: 'SIG-PT-102B',
+    Asset_Type: 'Point Machine',
+    Defect_Type: 'Point Machine 102B Overhaul Fault',
+    Severity_Level: 'High',
+    location: 'NDLS-CNB Down Line (KM 142/10 Junction)',
+    section: 'NDLS - CNB',
+    status: 'Merged Joint Block',
+
+    // A. SIGNALLING SYSTEM SPECIFIC DATA (NO TRACTION VOLTAGE/CURRENT/LOAD)
+    Power_Supply_Type: '110V AC Signalling Power',
+    Interlocking_Type: 'Electronic Interlocking (EI)',
+    Communication_Link_Status: 'Degraded', // Healthy / Degraded / Down
+
+    // C. MAINTENANCE & ASSET HEALTH
+    Asset_Age_Years: 6.5,
+    Last_Maintenance_Date: '2026-05-15',
+    Maintenance_Frequency_Days: 60,
+    Historical_Failure_Count: 2,
+    Overdue_Days: 3,
+    Date_to_Start_work: '2026-09-03',
+    Date_to_End_work: '2026-09-03',
+    Work_Due_Date: '2026-09-02',
+    Work_Overall_Duration: 3.0,
+    Work_Duration_Per_Day: 3.0,
+
+    // D. OPERATIONAL CONTEXT
+    Section_Traffic_Density: 'HIGH (44 Trains/Day)',
+    Corridor_Criticality: 'Critical High-Density Quad Corridor',
+    Available_Block_Window_Hours: 4.0,
+
+    // E. BLOCK-PLANNING INPUTS & INTER-DEPARTMENTAL COORDINATION
+    Overlapping_TRD_Request: 'TRC-2026-031 (OHE Insulator Breakdown)',
+    Overlapping_Engineering_Request: 'TRK-2026-081 (USFD Rail Flaw Weld)',
+    Planning_Horizon: '72 Hours',
+
+    // F. AI & DERIVED DECISION-SUPPORT RESULTS (SIMULATED ANALYTICS)
+    Priority_Score: 85,
+    Predicted_Resolution_Time_Hours: 3.0,
+    Risk_If_Delayed: 'High Risk of Point Indication Failure causing Signal Blanking & Corridor Delays',
+    Confidence_Score: '95.4%',
+    Joint_Block_Feasibility_Score: 91.0,
+    Task_Urgency_Tier: 'Tier 1 (Immediate SLA)',
+    Recommended_Block_Duration_Hours: 3.0,
+    Block_Conflict_Type: 'Overlapping Disconnection & Power Block',
+    Joint_Block_Recommendation: 'RECOMMENDED (Coordinate Disconnection Block with TMS Rail Weld TRK-081 & TDMS Power Block TRC-031)'
+  },
+  {
+    Defect_ID: 'SIG-2026-051',
+    id: 'SIG-2026-051',
+    department: 'SMMS',
+    deptLabel: 'Signal & Telecom (S&T)',
+    Detection_Method: 'Axle Counter Central Diagnostic Console',
+    Reported_Date: '2026-08-31',
+
+    Section_ID: 'SEC-NDLS-UMB-UP',
+    Station1: 'New Delhi (NDLS)',
+    Station2: 'Ambala Cantt (UMB)',
+    Chainage_KM: '48.100',
+    Zone: 'NR',
+    Division: 'DLI',
+    Asset_ID: 'SIG-AC-48A',
+    Asset_Type: 'Axle Counter',
+    Defect_Type: 'Axle Counter Sensor Calibration Drift',
+    Severity_Level: 'Medium',
+    location: 'NDLS-UMB Up Line (KM 48.100)',
+    section: 'NDLS - UMB',
+    status: 'Pending Block',
+
+    Power_Supply_Type: '24V DC Relay Supply',
+    Interlocking_Type: 'Route Relay Interlocking (RRI)',
+    Communication_Link_Status: 'Healthy',
+
+    Asset_Age_Years: 4.2,
+    Last_Maintenance_Date: '2026-07-01',
+    Maintenance_Frequency_Days: 90,
+    Historical_Failure_Count: 0,
+    Overdue_Days: 0,
+    Date_to_Start_work: '2026-09-04',
+    Date_to_End_work: '2026-09-04',
+    Work_Due_Date: '2026-09-06',
+    Work_Overall_Duration: 2.5,
+    Work_Duration_Per_Day: 2.5,
+
+    Section_Traffic_Density: 'HIGH (52 Trains/Day)',
+    Corridor_Criticality: 'High',
+    Available_Block_Window_Hours: 3.5,
+
+    Overlapping_TRD_Request: 'TRC-2026-038 (Catenary Dropper Slackness)',
+    Overlapping_Engineering_Request: 'None',
+    Planning_Horizon: 'Weekly Window',
+
+    Priority_Score: 72,
+    Predicted_Resolution_Time_Hours: 2.5,
+    Risk_If_Delayed: 'False Track Occupancy Indication leading to Automatic Signal Degradation',
+    Confidence_Score: '91.2%',
+    Joint_Block_Feasibility_Score: 84.5,
+    Task_Urgency_Tier: 'Tier 2 (72 Hours)',
+    Recommended_Block_Duration_Hours: 2.5,
+    Block_Conflict_Type: 'Single-Dept Disconnection',
+    Joint_Block_Recommendation: 'RECOMMENDED (Coordinate Disconnection with TDMS Catenary Repair TRC-038)'
+  }
 ];
 
+// Schema-Compliant 50-Field TDMS Traction Dataset (Raw Inputs + Health + Electrical Readings + Context + AI Results)
 export const TDMS_DEFECTS = [
-  { id: 'TRC-2026-031', department: 'TDMS', deptLabel: 'Traction (OHE)', defectType: 'OHE Cantilever Insulator Wear', location: 'NDLS-CNB Down Line (KM 142/14)', section: 'NDLS - CNB', zone: 'NR', division: 'DLI', severity: 'High', severityScore: 85, urgencyScore: 80, assetImpactScore: 82, trainImpactScore: 75, overdueDaysScore: 70, overdueDays: 3, status: 'Merged Joint Block', requestedWindow: '02:00 - 05:30', requestedDurationHrs: 3.5, equipmentRequired: 'Tower Wagon OHE-408', contractorTeam: 'OHE Breakdown Gang DLI', dateReported: '2026-08-30' }
+  {
+    // H. IDENTIFIERS & METADATA
+    Defect_ID: 'TRC-2026-031',
+    id: 'TRC-2026-031',
+    department: 'TDMS',
+    deptLabel: 'Traction Distribution (OHE)',
+    Detection_Method: 'Tower Wagon OHE Patrol / IR Camera',
+    Reported_Date: '2026-08-30',
+
+    // B. ASSET & LOCATION INFO
+    Section_ID: 'SEC-NDLS-CNB-DN',
+    Station1: 'New Delhi (NDLS)',
+    Station2: 'Kanpur Central (CNB)',
+    Chainage_KM: '142.350',
+    Zone: 'NR',
+    Division: 'DLI',
+    Corridor_ID: 'COR-NDLS-CNB-01',
+    Asset_ID: 'OHE-MAST-142/14',
+    Asset_Type: 'OHE Cantilever Insulator',
+    Defect_Type: 'OHE Cantilever Insulator Breakdown',
+    Severity_Level: 'Critical',
+    Latitude: '28.6145° N',
+    Longitude: '77.2105° E',
+    location: 'NDLS-CNB Down Line (Mast 142/14)',
+    section: 'NDLS - CNB',
+    status: 'Pending Block',
+
+    // A. RAW TDMS ELECTRICAL READINGS
+    Voltage_V: 25200, // 25.2 kV AC nominal traction voltage
+    Current_A: 420, // Traction load current in Amperes
+    Power_Load_MW: 14.5, // Power load on feeder sector
+
+    // C. MAINTENANCE & ASSET HEALTH FEATURES
+    Component_Health: '64%', // Attention Needed
+    Asset_Age_Years: 14.2,
+    Last_Maintenance_Date: '2026-05-10',
+    Maintenance_Frequency_Days: 90,
+    Historical_Failure_Count: 3,
+    Overdue_Days: 3,
+
+    // D. OPERATIONAL & ENVIRONMENTAL CONTEXT
+    Wind_Speed_kmh: 34,
+    Weather_Condition: 'High Wind / Clear',
+    Traffic_Trains_Per_Day: 44,
+    Goods_Trains_Forecast: 18,
+    Route_Criticality: 'High (Rajdhani Corridor)',
+
+    // E. BLOCK PLANNING & OVERLAPPING REQUESTS
+    Overlapping_Engineering_Request: 'TRK-2026-081 (USFD Rail Flaw Weld Replacement)',
+    Overlapping_SNT_Request: 'SIG-2026-042 (Point Machine 102B Overhaul)',
+    Date_to_Start_work: '2026-09-03',
+    Date_to_End_work: '2026-09-03',
+    Work_Due_Date: '2026-09-02',
+    Work_Overall_Duration: 3.5,
+    Work_Duration_Per_Day: 3.5,
+    Planning_Horizon: '72 Hours',
+
+    // F. AI ANALYTICS & INFERENCE RESULTS (SIMULATED PREDICTION OUTPUTS)
+    Failure_Probability_72h: 0.88,
+    Remaining_Useful_Life_Hours: 36,
+    Priority_Score: 88,
+    Priority_Class: 'CRITICAL',
+    Predicted_Resolution_Time_Hours: 3.5,
+    Risk_If_Delayed: 'High Risk of OHE Catenary Snap & Pantograph Entanglement causing 6+ hr Corridor Disruption',
+    Confidence_Score: '96.4%',
+
+    // G. DERIVED BLOCK OPTIMIZATION OUTPUTS
+    Joint_Block_Feasibility_Score: 92.5,
+    Task_Urgency_Tier: 'Tier 1 (Immediate SLA)',
+    Recommended_Block_Duration_Min: 210,
+    Joint_Block_Recommendation: 'RECOMMENDED (Merge Power Block with TMS Rail Weld TRK-081 & SMMS Signal Disconnection SIG-042)'
+  },
+  {
+    Defect_ID: 'TRC-2026-038',
+    id: 'TRC-2026-038',
+    department: 'TDMS',
+    deptLabel: 'Traction Distribution (OHE)',
+    Detection_Method: 'TRC Inspection Wagon',
+    Reported_Date: '2026-08-31',
+
+    Section_ID: 'SEC-NDLS-UMB-UP',
+    Station1: 'New Delhi (NDLS)',
+    Station2: 'Ambala Cantt (UMB)',
+    Chainage_KM: '48.150',
+    Zone: 'NR',
+    Division: 'DLI',
+    Corridor_ID: 'COR-NDLS-UMB-02',
+    Asset_ID: 'OHE-CATENARY-48/06',
+    Asset_Type: 'Catenary Wire & Dropper',
+    Defect_Type: 'OHE Catenary Wire Dropper Slackness',
+    Severity_Level: 'High',
+    Latitude: '28.7045° N',
+    Longitude: '77.1030° E',
+    location: 'NDLS-UMB Up Line (Mast 48/06)',
+    section: 'NDLS - UMB',
+    status: 'Merged Joint Block',
+
+    Voltage_V: 24800,
+    Current_A: 380,
+    Power_Load_MW: 12.8,
+
+    Component_Health: '78%',
+    Asset_Age_Years: 8.5,
+    Last_Maintenance_Date: '2026-06-20',
+    Maintenance_Frequency_Days: 90,
+    Historical_Failure_Count: 1,
+    Overdue_Days: 0,
+
+    Wind_Speed_kmh: 22,
+    Weather_Condition: 'Normal / Humid',
+    Traffic_Trains_Per_Day: 52,
+    Goods_Trains_Forecast: 22,
+    Route_Criticality: 'High',
+
+    Overlapping_Engineering_Request: 'TRK-2026-084 (Ballast Deep Screening)',
+    Overlapping_SNT_Request: 'SIG-2026-051 (Axle Counter Calibration)',
+    Date_to_Start_work: '2026-09-04',
+    Date_to_End_work: '2026-09-04',
+    Work_Due_Date: '2026-09-05',
+    Work_Overall_Duration: 4.0,
+    Work_Duration_Per_Day: 4.0,
+    Planning_Horizon: 'Weekly Window',
+
+    Failure_Probability_72h: 0.65,
+    Remaining_Useful_Life_Hours: 96,
+    Priority_Score: 78,
+    Priority_Class: 'HIGH',
+    Predicted_Resolution_Time_Hours: 4.0,
+    Risk_If_Delayed: 'Moderate Risk of Contact Wire Arcing and Pantograph Sparking at High Speed',
+    Confidence_Score: '92.8%',
+
+    Joint_Block_Feasibility_Score: 88.0,
+    Task_Urgency_Tier: 'Tier 2 (72 Hours)',
+    Recommended_Block_Duration_Min: 240,
+    Joint_Block_Recommendation: 'RECOMMENDED (Merge Power Block with TMS Ballast Screening TRK-084 & SMMS Axle Counter SIG-051)'
+  }
 ];
 
 export const ALL_DEFECTS = [
   ...TMS_DEFECTS.map(t => ({ ...t, priorityScore: t.Priority_Score || 85, severityScore: 85, urgencyScore: 80, assetImpactScore: 80, trainImpactScore: 75, overdueDaysScore: 50 })),
-  ...SMMS_DEFECTS.map(s => ({ ...s, priorityScore: s.severityScore || 80 })),
-  ...TDMS_DEFECTS.map(d => ({ ...d, priorityScore: d.severityScore || 80 })),
+  ...SMMS_DEFECTS.map(s => ({ ...s, priorityScore: s.Priority_Score || 82 })),
+  ...TDMS_DEFECTS.map(d => ({ ...d, priorityScore: d.Priority_Score || 88 })),
 ].sort((a, b) => (b.priorityScore || 80) - (a.priorityScore || 80));
 
 export const MERGED_BLOCK_PROPOSALS = [

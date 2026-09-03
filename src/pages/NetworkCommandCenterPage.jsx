@@ -117,7 +117,7 @@ export const NetworkCommandCenterPage = () => {
               fontSize: 14,
               letterSpacing: 1
             }}>
-              RAILWISE
+              PRAGATI
             </div>
             <span style={{ fontSize: 11, color: 'var(--ir-text-sub)', fontWeight: 600, letterSpacing: 0.5 }}>
               AI-POWERED RAILWAY OPERATIONS
@@ -191,7 +191,7 @@ export const NetworkCommandCenterPage = () => {
         />
 
         <Tag color="cyan" icon={<RobotOutlined />}>
-          RailWise AI Model Active: <strong>{areaData.sectionName}</strong>
+          PRAGATI AI Model Active: <strong>{areaData.sectionName}</strong>
         </Tag>
       </div>
 
@@ -277,12 +277,12 @@ export const NetworkCommandCenterPage = () => {
               </div>
             </Card>
 
-            {/* RAILWISE AI Operational Opportunities Panel */}
+            {/* PRAGATI AI Operational Opportunities Panel */}
             <Card
               size="small"
               title={
                 <span style={{ color: '#059669', fontWeight: 700, fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <RobotOutlined /> RAILWISE AI OPPORTUNITIES
+                  <RobotOutlined /> PRAGATI AI OPPORTUNITIES
                 </span>
               }
               style={{ background: 'rgba(5, 150, 105, 0.04)', border: '1px solid #059669', borderRadius: 8 }}
@@ -358,12 +358,12 @@ export const NetworkCommandCenterPage = () => {
         />
       </Card>
 
-      {/* 5. RAILWISE AI RECOMMENDATION & WHAT-IF SIMULATION DRAWER */}
+      {/* 5. PRAGATI AI RECOMMENDATION & WHAT-IF SIMULATION DRAWER */}
       <Drawer
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#059669' }}>
             <RobotOutlined />
-            <span>RAILWISE AI PLAN RECOMMENDATION: {selectedAiPlan?.sectionCode}</span>
+            <span>PRAGATI AI PLAN RECOMMENDATION: {selectedAiPlan?.sectionCode}</span>
           </div>
         }
         placement="right"
@@ -376,7 +376,7 @@ export const NetworkCommandCenterPage = () => {
             <Alert
               type="info"
               showIcon
-              message="RAILWISE DECISION-SUPPORT ADVISORY"
+              message="PRAGATI DECISION-SUPPORT ADVISORY"
               description="This recommendation provides AI predictive simulation to maximize asset availability. It does NOT overwrite live railway signalling interlocking."
             />
 
